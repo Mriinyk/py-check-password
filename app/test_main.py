@@ -5,14 +5,15 @@ from app.main import check_password
 @pytest.mark.parametrize(
     "password, expected",
     [
-        pytest.param("Pass@word", False, id="no number"),
-        pytest.param("password1@", False, id="no capital letter"),
-        pytest.param("PASS1@WORD", False, id="no lowercase letter"),
-        pytest.param("Pass word1@", False, id="there is a space"),
-        pytest.param("Pass@1", False, id="less than 8 characters"),
-        pytest.param("Pass@word1word1word", False,
-                     id="more than 16 characters"),
-        pytest.param("Pass@word1", True, id="all good")
+        pytest.param("A1@aaaa", False, id="too short: 7 chars"),
+        pytest.param("A1@aaaaaaaaaaaaaaaa", False, id="too long: 17 chars"),
+        pytest.param("password123@", False, id="no uppercase letter"),
+        pytest.param("PASSWORD@@@", False, id="no digits"),
+        pytest.param("PASSWORD123", False, id="no special symbols"),
+        pytest.param("PASS123@", True, id="valid: only upper, digit, special"),
+        pytest.param("Pass123@", True, id="valid: all types included"),
+        pytest.param("Pass word1@", False, id="forbidden space"),
+        pytest.param("Pass123@%", False, id="forbidden symbol '%'"),
     ]
 )
 def test_check_password(password: str, expected: bool) -> None:
